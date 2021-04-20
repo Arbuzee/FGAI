@@ -11,10 +11,32 @@ UFGVisionSensingComponent::UFGVisionSensingComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+void UFGVisionSensingComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	TraceDelegate.BindUObject(this, &UFGVisionSensingComponent::OnTraceCompleted);
+}
+
 void UFGVisionSensingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	SetWantsTrace();
+	
+	if (LastTraceHandle._Data.FrameNumber != 0)
+	{
+		FTraceDatum OutData;
+		if (GetWorld()->QueryTraceData(LastTraceHandle, OutData))
+		{
+			// Clear out handle so next tick we don't enter
+			LastTraceHandle._Data.FrameNumber = 0;
+			// trace is finished, do stuff with results
+			DoWorkWithTraceResults(OutData);
+		}
+	}
 
+	
+	
+	
 	if (SensingSettings == nullptr)
 		return;
 
@@ -45,23 +67,32 @@ void UFGVisionSensingComponent::TickComponent(float DeltaTime, enum ELevelTick T
 			Results.SensedActor = Target->GetOwner();
 			OnTargetLost.Broadcast(Results);
 			SensedTargets.RemoveAt(Index);
+			CurrentTarget = nullptr;
 		}
 	}
 
 	TArray<UFGVisionSensingTargetComponent*> ListOfTargets;
 	
 	UFGVisionSensingTargetComponent::GetSensingTargets(ListOfTargets, GetOwner()->GetActorLocation(), SensingSettings->DistanceMinimum);
-
-	for (UFGVisionSensingTargetComponent* Target : ListOfTargets)
+	if (bWantsTrace)
 	{
-		if (!SensedTargets.Contains(Target) &&
-			IsPointVisible(Target->GetTargetOrigin(), Origin, Direction, SensingSettings->DistanceMinimum))
+		for (UFGVisionSensingTargetComponent* Target : ListOfTargets)
 		{
-			SensedTargets.Add(Target);
-			FFGVisionSensingResults Results;
-			Results.SensedActor = Target->GetOwner();
-			OnTargetSensed.Broadcast(Results);
+			if (!SensedTargets.Contains(Target))
+			{
+				if(IsPointVisible(Target->GetTargetOrigin(), Origin, Direction, SensingSettings->DistanceMinimum))
+				{
+					CurrentTarget = Target;
+					SensedTargets.Add(Target);
+					FFGVisionSensingResults Results;
+					Results.SensedActor = Target->GetOwner();
+				}
+				
+			}
 		}
+		if (CurrentTarget != nullptr)
+			LastTraceHandle = RequestTrace(GetOwner()->GetActorLocation(), CurrentTarget->GetTargetOrigin());
+		bWantsTrace = false;
 	}
 }
 
@@ -83,7 +114,7 @@ bool UFGVisionSensingComponent::IsPointVisible(const FVector& PointToTest, const
 	const float Dot = FVector::DotProduct(Direction, DirectionToTarget);
 
 	const bool bIsValid = Dot > AsHalfRad;
-
+	
 	return bIsValid;
 }
 
@@ -95,3 +126,57 @@ float UFGVisionSensingComponent::GetVisionInRadians() const
 	return FMath::Cos(FMath::DegreesToRadians(SensingSettings->Angle));
 }
 
+void UFGVisionSensingComponent::SetWantsTrace()
+{
+	// don't allow overlapping traces here.
+	if (!GetWorld()->IsTraceHandleValid(LastTraceHandle,false))
+	{
+		bWantsTrace = true;
+	}
+}
+
+FTraceHandle UFGVisionSensingComponent::RequestTrace(FVector Start, FVector End)
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr)
+		return FTraceHandle();
+
+	auto Channel = UEngineTypes::ConvertToCollisionChannel(MyTraceType);
+	
+	// Create a FCollisionQueryParams and send it instead of the default below
+	// auto Params = UKismetSystemLibrary::ConfigureCollisionParams(NAME_AsyncRequestTrace, bTraceComplex, ActorsToIgnore, bIgnoreSelf, this);
+	// const FCollisionObjectQueryParams ObjectQueryParams(Channel);
+	//
+	// bool bTraceComplex = false;
+	// bool bIgnoreSelf = true;
+	// TArray<AActor*> ActorsToIgnore;
+	
+	AActor* ActorToIgnore = GetOwner();
+
+	FCollisionQueryParams Params = FCollisionQueryParams("NAME_AsyncRequestTrace",false, ActorToIgnore);
+	return World->AsyncLineTraceByChannel(EAsyncTraceType::Single, 
+        Start, End, 
+        Channel, 
+        Params,
+        FCollisionResponseParams::DefaultResponseParam, 
+        &TraceDelegate);
+	
+}
+
+void UFGVisionSensingComponent::OnTraceCompleted(const FTraceHandle& Handle, FTraceDatum& Data)
+{
+	ensure(Handle == LastTraceHandle);
+	DoWorkWithTraceResults(Data);
+	LastTraceHandle._Data.FrameNumber = 0; // reset it
+}
+
+void UFGVisionSensingComponent::DoWorkWithTraceResults(const FTraceDatum& TraceData)
+{
+	// do things here
+	if (TraceData.OutHits.Num() <= 0) return;
+	
+	FFGVisionSensingResults Results;
+	AActor* Actor = TraceData.OutHits[0].GetActor();
+	Results.SensedActor = Actor;
+	OnTargetSensed.Broadcast(Results);
+}
