@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AI/Sensing/FGNoiseComponent.h"
 #include "GameFramework/Pawn.h"
 #include "FGCharacter.generated.h"
 
@@ -8,6 +9,8 @@ class USkeletalMeshComponent;
 class UCapsuleComponent;
 class UCameraComponent;
 class UFGMovementComponent;
+class UFGVisionSensingTargetComponent;
+class UFGNoiseComponent;
 
 UCLASS()
 class AFGCharacter : public APawn
@@ -22,7 +25,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UFGMovementComponent* MovementComponent;
-
+	
+	UPROPERTY(VisibleAnywhere, Category = VisionTarget)
+	UFGVisionSensingTargetComponent* VisionSensingTargetComponent;
+	
+	UPROPERTY(VisibleAnywhere, Category = Noise)
+	UFGNoiseComponent* NoiseComponent;
+	
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
@@ -40,7 +49,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
 
 protected:
 
@@ -73,6 +82,5 @@ public:
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 	UCapsuleComponent* GetCapsule() const { return Capsule; }
-
 };
 

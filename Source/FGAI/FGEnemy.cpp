@@ -2,6 +2,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "AI/Sensing/FGVisionSensingComponent.h"
+#include "AI/Sensing/FGHearingSensingComponent.h"
 #include "AI/Movement/FGNavMovementComponent.h"
 
 AFGEnemy::AFGEnemy()
@@ -10,13 +11,15 @@ AFGEnemy::AFGEnemy()
 	RootComponent = Capsule;
 	// Set size for collision capsule
 	Capsule->InitCapsuleSize(55.f, 96.0f);
-
+	Capsule->SetCollisionProfileName("BlockAllDynamic");
+	
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
 	Mesh->SetupAttachment(Capsule);
 	Mesh->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 	Mesh->SetRelativeLocation(FVector(0.0f, 0.0f, -90.0f));
 
-	VisionSensingComponent = CreateDefaultSubobject<UFGVisionSensingComponent>(TEXT("VisionSensing"));
+	VisionSensingComponent = CreateDefaultSubobject<UFGVisionSensingComponent>(TEXT("VisionSensingComponent"));
+	HearingSensingComponent = CreateDefaultSubobject<UFGHearingSensingComponent>(TEXT("HearingSensingComponent"));
 	NavMovementComponent = CreateDefaultSubobject<UFGNavMovementComponent>(TEXT("NavMovementComponent"));
 }
 
