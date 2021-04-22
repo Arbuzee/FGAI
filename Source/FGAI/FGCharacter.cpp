@@ -6,6 +6,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/FGMovementComponent.h"
 #include "FGMovementStatics.h"
+#include "AI/Sensing/FGVisionSensingTargetComponent.h"
+#include "AI/Sensing/FGNoiseActor.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 AFGCharacter::AFGCharacter()
@@ -44,6 +46,10 @@ AFGCharacter::AFGCharacter()
 
 	MovementComponent = CreateDefaultSubobject<UFGMovementComponent>(TEXT("MovementComponent"));
 	MovementComponent->SetUpdatedComponent(Capsule);
+	
+	VisionSensingTargetComponent = CreateDefaultSubobject<UFGVisionSensingTargetComponent>(TEXT("VisionSensingTargetComponent"));
+	
+	NoiseComponent = CreateDefaultSubobject<UFGNoiseComponent>(TEXT("NoiseComponent"));
 }
 
 void AFGCharacter::Tick(float DeltaTime)

@@ -7,6 +7,7 @@ class USkeletalMeshComponent;
 class UCapsuleComponent;
 class UCameraComponent;
 class UFGVisionSensingComponent;
+class UFGHearingSensingComponent;
 class UFGNavMovementComponent;
 
 UCLASS()
@@ -22,6 +23,9 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Vision)
 	UFGVisionSensingComponent* VisionSensingComponent;
+	
+	UPROPERTY(VisibleDefaultsOnly, Category = Vision)
+	UFGHearingSensingComponent* HearingSensingComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
 	UFGNavMovementComponent* NavMovementComponent;
