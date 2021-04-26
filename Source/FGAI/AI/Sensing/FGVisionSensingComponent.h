@@ -68,4 +68,6 @@ protected:
 	FTraceHandle LastTraceHandle;
 	FTraceDelegate TraceDelegate; // Delegate fired when trace is completed
 	uint32 bWantsTrace : 1; // Did user request trace?
+
+	bool TargetSensed = false;
 };

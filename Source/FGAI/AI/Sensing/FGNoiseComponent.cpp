@@ -26,10 +26,10 @@ void UFGNoiseComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	Timer += DeltaTime;
-	if (Timer >= FireRate)
+	if (Timer >= 1 / FireRate)
 	{
 		SpawnNoise();
-		FireRate++;
+		Timer = 0.f;
 	}
 }
 

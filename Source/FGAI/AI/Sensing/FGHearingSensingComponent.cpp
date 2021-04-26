@@ -23,6 +23,8 @@ void UFGHearingSensingComponent::TickComponent(float DeltaTime, ELevelTick TickT
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (Distracted) return;
+	
 	TArray<AFGNoiseActor*> NoiseActors;
 	NoiseActors = Cast<UFGGameInstance>(GetWorld()->GetGameInstance())->GetNoiseActors();
 
@@ -39,6 +41,7 @@ void UFGHearingSensingComponent::TickComponent(float DeltaTime, ELevelTick TickT
 			FFGHearingInfo HearingInfo;
 			HearingInfo.NoiseInstigator = NoiseActor->GetInfo().NoiseInstigator;
 			OnNoiseHeard.Broadcast(HearingInfo);
+			Distracted = true;
 		}
 	}
 }

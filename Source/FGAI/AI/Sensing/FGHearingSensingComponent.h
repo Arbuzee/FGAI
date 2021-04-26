@@ -34,7 +34,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float HearingRange = 1000.f;
-	
+
+	UPROPERTY(BlueprintReadWrite)
+	bool Distracted = false;
 	
 protected:
 	virtual void BeginPlay() override;

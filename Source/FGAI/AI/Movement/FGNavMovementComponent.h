@@ -15,6 +15,7 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
+	UFUNCTION(BlueprintCallable)
 	virtual void RequestPathMove(const FVector& MoveInput) override;
 	virtual bool CanStartPathFollowing() const override;
 	virtual bool CanStopPathFollowing() const override;
