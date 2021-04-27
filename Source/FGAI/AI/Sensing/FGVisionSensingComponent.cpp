@@ -22,27 +22,12 @@ void UFGVisionSensingComponent::TickComponent(float DeltaTime, enum ELevelTick T
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	SetWantsTrace();
 	
-	if (LastTraceHandle._Data.FrameNumber != 0)
-	{
-		FTraceDatum OutData;
-		if (GetWorld()->QueryTraceData(LastTraceHandle, OutData))
-		{
-			// Clear out handle so next tick we don't enter.
-			LastTraceHandle._Data.FrameNumber = 0;
-			// Trace is finished, do stuff with results.
-			DoWorkWithTraceResults(OutData);
-		}
-	}
-
-	
-	
+	const FVector Direction = GetOwner()->GetActorForwardVector();
+	const FVector Origin = GetOwner()->GetActorLocation();
 	
 	if (SensingSettings == nullptr)
 		return;
-
-	const FVector Direction = GetOwner()->GetActorForwardVector();
-	const FVector Origin = GetOwner()->GetActorLocation();
-
+	
 	if (bDebugDrawVision)
 	{
 		FVector Right = Direction.RotateAngleAxis(SensingSettings->Angle, FVector::UpVector);
@@ -71,6 +56,7 @@ void UFGVisionSensingComponent::TickComponent(float DeltaTime, enum ELevelTick T
 			CurrentTarget = nullptr;
 		}
 	}
+	
 
 	TArray<UFGVisionSensingTargetComponent*> ListOfTargets;
 	
@@ -94,6 +80,19 @@ void UFGVisionSensingComponent::TickComponent(float DeltaTime, enum ELevelTick T
 		if (CurrentTarget != nullptr)
 			LastTraceHandle = RequestTrace(GetOwner()->GetActorLocation(), CurrentTarget->GetTargetOrigin());
 		bWantsTrace = false;
+	}
+	
+	if (LastTraceHandle._Data.FrameNumber != 0)
+	{
+		FTraceDatum OutData;
+		if (GetWorld()->QueryTraceData(LastTraceHandle, OutData))
+		{
+			// Clear out handle so next tick we don't enter.
+			LastTraceHandle._Data.FrameNumber = 0;
+			// Trace is finished, do stuff with results.
+			DoWorkWithTraceResults(OutData);
+			
+		}
 	}
 }
 
