@@ -29,7 +29,7 @@ public:
 
 	FVector RequestedVelocity = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, Category = Movement)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Movement)
 	float MovementSpeed = 400.0f;
 
 	bool bHasRequestedVelocity = false;
