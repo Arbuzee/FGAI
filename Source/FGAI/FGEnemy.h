@@ -27,7 +27,7 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Vision)
 	UFGHearingSensingComponent* HearingSensingComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
+	UPROPERTY(BlueprintReadOnly, Category = Movement)
 	UFGNavMovementComponent* NavMovementComponent;
 
 	AFGEnemy();
