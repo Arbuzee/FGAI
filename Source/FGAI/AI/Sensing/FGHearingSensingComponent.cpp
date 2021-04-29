@@ -40,6 +40,7 @@ void UFGHearingSensingComponent::TickComponent(float DeltaTime, ELevelTick TickT
 		{
 			FFGHearingInfo HearingInfo;
 			HearingInfo.NoiseInstigator = NoiseActor->GetInfo().NoiseInstigator;
+			HearingInfo.Range = FMath::Sqrt(DistanceToNoiseSq);
 			OnNoiseHeard.Broadcast(HearingInfo);
 			Distracted = true;
 		}

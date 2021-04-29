@@ -15,19 +15,19 @@ class AFGEnemy : public APawn
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(VisibleDefaultsOnly, Category=Collision)
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Collision)
 	UCapsuleComponent* Capsule;
 
-	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = Vision)
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Vision)
 	UFGVisionSensingComponent* VisionSensingComponent;
 	
-	UPROPERTY(VisibleDefaultsOnly, Category = Vision)
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Vision)
 	UFGHearingSensingComponent* HearingSensingComponent;
 
-	UPROPERTY(BlueprintReadOnly, Category = Movement)
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Movement)
 	UFGNavMovementComponent* NavMovementComponent;
 
 	AFGEnemy();
