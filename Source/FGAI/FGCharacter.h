@@ -17,19 +17,19 @@ class AFGCharacter : public APawn
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(VisibleDefaultsOnly, Category=Collision)
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Collision)
 	UCapsuleComponent* Capsule;
 
-	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh;
 
-	UPROPERTY(VisibleAnywhere, Category = Movement)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Movement)
 	UFGMovementComponent* MovementComponent;
 	
-	UPROPERTY(VisibleAnywhere, Category = VisionTarget)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = VisionTarget)
 	UFGVisionSensingTargetComponent* VisionSensingTargetComponent;
 	
-	UPROPERTY(VisibleAnywhere, Category = Noise)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Noise)
 	UFGNoiseComponent* NoiseComponent;
 	
 	/** First person camera */
