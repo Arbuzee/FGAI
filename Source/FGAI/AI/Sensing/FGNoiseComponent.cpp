@@ -37,7 +37,7 @@ void UFGNoiseComponent::SpawnNoise()
 {
 	AFGNoiseActor* NoiseActor = GetWorld()->SpawnActor<AFGNoiseActor>(GetOwner()->GetActorLocation(), GetOwner()->GetActorRotation());
 	
-	NoiseActor->SetupInfo(GetOwner(), 1000.f);
+	NoiseActor->SetupInfo(GetOwner(), _Radius);
 	Cast<UFGGameInstance>(GetWorld()->GetGameInstance())->AddNoiseActor(NoiseActor);
 	
 	// UE_LOG(LogTemp, Log, TEXT("Noise Spawned") );
