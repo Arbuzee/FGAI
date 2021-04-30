@@ -53,7 +53,7 @@ protected:
 
 protected:
 
-	UPROPERTY(EditAnywhere, Category = Movement)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float Speed;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
